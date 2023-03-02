@@ -88,7 +88,7 @@ function saveTime() {
   var username = prompt("Please enter your name:");
 
   // get the current leaderboard data from localStorage or initialize an empty array
-  var times = JSON.parse(localStorage.getItem("times") || "[]");
+  var times = JSON.parse(_data.getItem("leaderboard.json") || "[]");
 
   // add the new entry to the leaderboard
   times.push({username: username, timeSpent: timeSpent});
