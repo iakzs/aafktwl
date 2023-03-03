@@ -1,49 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Time Tracker</title>
-</head>
-<body>
-	<h1>Time Tracker</h1>
-	<p>You have spent <span id="time-spent">0</span> seconds on this page.</p>
-	<button onclick="saveTime()">Save Time</button>
-	<h2>Leaderboard</h2>
-	<ol id="leaderboard"></ol>
-
-	<script>
-		// Keep track of time spent on the page
-		let startTime = new Date().getTime();
-		setInterval(updateTimeSpent, 1000);
-
-		function updateTimeSpent() {
-			let currentTime = new Date().getTime();
-			let timeSpent = Math.floor((currentTime - startTime) / 1000);
-			document.getElementById("time-spent").innerHTML = timeSpent;
-		}
-
-		// Save time spent on the page to the leaderboard
-		function saveTime() {
-			let timeSpent = Math.floor((new Date().getTime() - startTime) / 1000);
-			let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-			leaderboard.push(timeSpent);
-			leaderboard.sort((a, b) => b - a);
-			localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-			updateLeaderboard();
-		}
-
-		// Update the leaderboard on the page
-		function updateLeaderboard() {
-			let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-			let leaderboardElement = document.getElementById("leaderboard");
-			leaderboardElement.innerHTML = "";
-			for (let i = 0; i < leaderboard.length; i++) {
-				let listItem = document.createElement("li");
-				listItem.innerHTML = leaderboard[i] + " seconds";
-				leaderboardElement.appendChild(listItem);
-			}
-		}
-
-		updateLeaderboard();
-	</script>
-</body>
+  <head>
+    <title>Time Tracker</title>
+  </head>
+  <body>
+    <h1>Time Tracker</h1>
+    <p>You have been on this page for <span id="time">0</span> seconds.</p>
+    <button onclick="start_timer()">Start Timer</button>
+    <button onclick="stop_timer()">Stop Timer</button>
+    <button onclick="save_time()">Save Time</button>
+    <h2>Leaderboard</h2>
+    <ol id="leaderboard"></ol>
+    <script>
+      let start_time = 0;
+      let timer_id = null;
+      
+      function start_timer() {
+        start_time = Date.now();
+        timer_id = setInterval(update_timer, 1000);
+      }
+      
+      function update_timer() {
+        const elapsed_seconds = Math.floor((Date.now() - start_time) / 1000);
+        document.getElementById("time").textContent = elapsed_seconds;
+      }
+      
+      function stop_timer() {
+        clearInterval(timer_id);
+      }
+      
+      function save_time() {
+        const elapsed_seconds = Math.floor((Date.now() - start_time) / 1000);
+        const leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+        leaderboard.push({ time: elapsed_seconds, nickname: "anonymous" });
+        leaderboard.sort((a, b) => b.time - a.time);
+        localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+        update_leaderboard();
+      }
+      
+      function update_leaderboard() {
+        const leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+        const leaderboard_element = document.getElementById("leaderboard");
+        leaderboard_element.innerHTML = "";
+        leaderboard.forEach((entry, index) => {
+          const li_element = document.createElement("li");
+          li_element.textContent = `${index + 1}. ${entry.nickname}: ${entry.time} seconds`;
+          leaderboard_element.appendChild(li_element);
+        });
+      }
+      
+      update_leaderboard();
+    </script>
+  </body>
 </html>
