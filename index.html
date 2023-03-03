@@ -1,55 +1,266 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Time Tracker</title>
+    <title>very epic time tracker</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+        background-color: #fff;
+      }
+      
+      h1, h2 {
+        text-align: center;
+        color: #333;
+        margin-top: 0;
+      }
+      
+      #time-spent {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      
+      button {
+        display: block;
+        margin: 0 auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #f7f7f7;
+        background-color: #333;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      #leaderboard {
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 20px;
+      }
+      
+      #leaderboard ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      #leaderboard li {
+        margin-bottom: 10px;
+        padding: 5px;
+        border-radius: 3px;
+        background-color: #f7f7f7;
+      }
+    </style>
   </head>
   <body>
-    <h1>Time Tracker</h1>
-    <p>You have been on this page for <span id="time">0</span> seconds.</p>
-    <button onclick="start_timer()">Start Timer</button>
-    <button onclick="stop_timer()">Stop Timer</button>
-    <button onclick="save_time()">Save Time</button>
-    <h2>Leaderboard</h2>
-    <ol id="leaderboard"></ol>
+    <h1>very epic time tracker</h1>
+    <div id="time-spent"></div>
+    <button onclick="saveTime()">Save Time</button>
+    <div id="leaderboard"></div>
     <script>
-      let start_time = 0;
-      let timer_id = null;
-      
-      function start_timer() {
-        start_time = Date.now();
-        timer_id = setInterval(update_timer, 1000);
-      }
-      
-      function update_timer() {
-        const elapsed_seconds = Math.floor((Date.now() - start_time) / 1000);
-        document.getElementById("time").textContent = elapsed_seconds;
-      }
-      
-      function stop_timer() {
-        clearInterval(timer_id);
-      }
-      
-      function save_time() {
-        const elapsed_seconds = Math.floor((Date.now() - start_time) / 1000);
-        const leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
-        leaderboard.push({ time: elapsed_seconds, nickname: "anonymous" });
-        leaderboard.sort((a, b) => b.time - a.time);
-        localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-        update_leaderboard();
-      }
-      
-      function update_leaderboard() {
-        const leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
-        const leaderboard_element = document.getElementById("leaderboard");
-        leaderboard_element.innerHTML = "";
-        leaderboard.forEach((entry, index) => {
-          const li_element = document.createElement("li");
-          li_element.textContent = `${index + 1}. ${entry.nickname}: ${entry.time} seconds`;
-          leaderboard_element.appendChild(li_element);
+      var startTime = new Date().getTime();
+
+      window.onload = function() {
+        // calculate the time spent
+        var currentTime = new Date().getTime();
+        var timeSpent = (currentTime - startTime) / 1000; // in seconds
+
+        // display the time spent on the page
+        document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
+
+        // display the leaderboard
+        showLeaderboard();
+      };
+
+      function showLeaderboard() {
+        var xhr = new XMLHttpRequest();
+        var url = 'https://api.github.com/repos/iakzs/aafttwl/contents/_data/leaderboard.json';
+        var accessToken = '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'; // replace with your own personal access token
+        xhr.open('GET', url);
+        xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+
+xhr.addEventListener('load', function() {
+  if (xhr.status === 200) {
+    var response = xhr.responseText;
+    // Process the response data and update the UI
+    document.getElementById('result').textContent = response;
+  } else {
+    // Handle errors
+    console.error('Request failed.  Returned status of ' + xhr.status);
+  }
+});
+xhr.onerror = function() {
+  console.log('Error occurred during XHR request');
+};
+
+  xhr.send();
+}
+function startGame() {
+  // Hide the start button
+  document.getElementById('start-btn').style.display = 'none';
+
+  // Start the timer
+  var startTime = Date.now();
+
+  // Listen for clicks on the target
+  var target = document.getElementById('target');
+  target.addEventListener('click', function() {
+    // Calculate the elapsed time
+    var elapsedTime = (Date.now() - startTime) / 1000;
+
+    // Show the time it took to click the target
+    var timeResult = document.getElementById('time-result');
+    timeResult.textContent = elapsedTime + ' seconds';
+
+    // Update the leaderboard
+    updateLeaderboard(elapsedTime);
+  });
+}
+
+function updateLeaderboard(time) {
+  // Load the leaderboard data
+  var xhr = new XMLHttpRequest();
+  var url = 'https://api.github.com/repos/iakzs/aafttwl/contents/_data/leaderboard.json';
+  var accessToken = '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'; // replace with your own personal access token
+  xhr.open('GET', url);
+  xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      var leaderboardData = JSON.parse(xhr.responseText);
+      leaderboardData.push({name: 'Player', time: time});
+      leaderboardData.sort(function(a, b) {
+        return a.time - b.time;
+      });
+      leaderboardData.splice(10);
+
+      // Save the updated leaderboard data
+      saveLeaderboard(leaderboardData);
+
+      // Update the UI
+      showLeaderboard();
+    } else {
+      // Handle errors
+      console.error('Request failed.  Returned status of ' + xhr.status);
+    }
+  });
+
+  xhr.onerror = function() {
+    console.log('Error occurred during XHR request');
+  };
+
+  xhr.send();
+}
+
+function saveLeaderboard(data) {
+  var xhr = new XMLHttpRequest();
+  var url = 'https://api.github.com/repos/iakzs/aafttwl/contents/_data/leaderboard.json';
+  var accessToken = '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'; // replace with your own personal access token
+  var message = 'Update leaderboard data';
+  var content = btoa(JSON.stringify(data));
+  var sha = '';
+
+  // Get the latest commit SHA
+  xhr.open('GET', url);
+  xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      var response = JSON.parse(xhr.responseText);
+      sha = response.sha;
+      // Update the leaderboard data
+      updateLeaderboardData();
+    } else {
+      // Handle errors
+      console.error('Request failed.  Returned status of ' + xhr.status);
+    }
+  });
+
+  xhr.onerror = function() {
+    console.log('Error occurred during XHR request');
+  };
+
+  xhr.send();
+
+  function updateLeaderboardData() {
+    xhr.open('PUT', url);
+    xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+
+    var data = JSON.stringify({
+      message: message,
+      content
+    // Disable the form submission to prevent page refresh
+    event.preventDefault();
+
+    // Get the form data
+    var formData = new FormData(event.target);
+
+    // Get the name and time values from the form data
+    var name = formData.get('name');
+    var time = formData.get('time');
+
+    // Create a new entry object with the name and time values
+    var newEntry = { name: name, time: time };
+
+    // Get the current leaderboard data from the API
+    var xhr = new XMLHttpRequest();
+    var url = 'https://api.github.com/repos/iakzs/aafttwl/contents/_data/leaderboard.json';
+    var accessToken = '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'; // replace with your own personal access token
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+
+    xhr.addEventListener('load', function() {
+      if (xhr.status === 200) {
+        var response = xhr.responseText;
+        var leaderboardData = JSON.parse(response);
+
+        // Add the new entry to the leaderboard data
+        leaderboardData.push(newEntry);
+
+        // Update the leaderboard data on the server
+        var putXhr = new XMLHttpRequest();
+        var putUrl = 'https://api.github.com/repos/iakzs/aafttwl/contents/_data/leaderboard.json';
+        var putData = JSON.stringify({
+          message: 'Update leaderboard data',
+          content: btoa(JSON.stringify(leaderboardData)),
+          sha: leaderboardSha
         });
+        putXhr.open('PUT', putUrl);
+        putXhr.setRequestHeader('Authorization', 'token ' + accessToken);
+        putXhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+        putXhr.addEventListener('load', function() {
+          if (putXhr.status === 200) {
+            // Reload the leaderboard
+            showLeaderboard();
+          } else {
+            console.error('PUT request failed.  Returned status of ' + putXhr.status);
+          }
+        });
+
+        putXhr.onerror = function() {
+          console.log('Error occurred during PUT request');
+        };
+
+        putXhr.send(putData);
+      } else {
+        console.error('GET request failed.  Returned status of ' + xhr.status);
       }
-      
-      update_leaderboard();
-    </script>
-  </body>
+    });
+
+    xhr.onerror = function() {
+      console.log('Error occurred during XHR request');
+    };
+
+    xhr.send();
+  }
+ updateLeaderboardData();
+})();
+</script>
 </html>
