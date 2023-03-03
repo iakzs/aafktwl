@@ -78,7 +78,7 @@ function saveTime() {
   // get the current leaderboard data from the external JSON file
   var xhr = new XMLHttpRequest();
   var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
-  var accessToken = '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';
+  var accessToken = '';
   xhr.open('GET', url);
   xhr.setRequestHeader('Authorization', 'token ' + accessToken);
   xhr.addEventListener('load', function() {
