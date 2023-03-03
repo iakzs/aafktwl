@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+
+		<meta charset = "utf-8">
+		<link rel = "shortcut icon" type = "image/x-icon" href="Logo.ico" />
+
+		<meta name = "author" content = "iakzs" />
+		<meta name = "description" content = "main webpage for this bro" />
+		<meta name = "keywords" content = "Webpages" />
+
+		<meta property = "og:title" content = "iakzs" />
+		<meta property = "og:description" content = "koslz studios's webpage" />
+		<meta property = "og:type" content = "website" />
+		<meta property = "og:url" content = "https://koslz-studios.github.io" />
+		<meta property = "og:secure_url" content = "https://koslz-studios.github.io">
+		<meta property = "og:image" content = "https://github.com/iakzs/kswp/blob/main/logo.ico?raw=true" />
+
+		<title>koslz studios's page</title>
+
+	 <style>
+
+	 		body
+			{
+				background-color: #232323;
+				background-image: url(Landscape.jpg);
+				background-attachment: fixed;
+				background-size: cover;
+				background-repeat:
+				no-repeat;"
+				TEXT = "#ffffff"
+			}
+
+			#Header, #Scripts
+			{
+				text-align: center;
+				animation: fadeIn 2s
+			}
+
+			#Header h1
+			{
+				margin: 18px;
+				color: #ffffff;
+				font-family: "Trebuchet MS";
+			}
+
+			#Scripts a:hover
+			{
+				color: #bcbcbc;
+				text-decoration: none;
+				font-size: 30px;
+			}
+
+			#Scripts
+			{
+				margin: 35px;
+			}
+
+			#Scripts a
+			{
+				line-height: 60px;
+				color: #e8e8e8;
+				font-family: Monospace;
+				font-size: 25px;
+			}
+
+			#Message
+			{
+				margin-top: 140px;
+				text-align: center;
+				color: #a8a8a8;
+				font-family: Helvetica;
+				font-size: 45px;
+			}
+
+			@keyframes fadeIn
+			{
+				from {
+					opacity: 0;
+				}
+
+				to {
+					opacity: 1;
+				}
+			}
+
+	 </style>
+
+	</head>
+	<body>
+		<div id = "Header">
+			<h1><font size = "25">koslz studios's Main WebPage</font></h1>
+		</div>
+		<div id = "Scripts">
+			<a href="10" target = "_blank">10</a>
+			<br>
+			<a href="20" target = "_blank">2.0</a>
+			<br>
+			<a href="?" target = "_blank">coming soon</a>
+			<br>
+			<a href="?" target = "_blank">coming soon</a>
+			<br>
+			<a href="?" target = "_blank">coming soon</a>
+			<br>
+			<a href="?" target = "_blank">coming soon</a>
+			<br>
+			<a href="?" target = "_blank">coming soon</a>
+			<br>
+			<a href="?" target = "_blank">coming soon</a>
+			<br>
+			<a href="?" target = "_blank">coming soon</a>
+		</div>
+		<div>
+			<p id = "Message">N/A</p>
+		</div>
+		<script type = "text/javascript">
+
+			let phraseList = [
+				"hi",
+				"hello there",
+				"epic"
+		];
+
+			var element = document.getElementById("Message");
+			element.innerHTML = phraseList[Math.floor(Math.random() * phraseList.length)];
+
+		</script>
+	</body>
+</html>
