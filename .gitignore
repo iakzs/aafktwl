@@ -5,4 +5,7 @@
 
 .vscode/launch.json
 tkns/
+node_modules/
+package-lock.json
+package.json
 script.js
