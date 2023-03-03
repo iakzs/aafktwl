@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "@octokit/rest": "^19.0.7"
+    "@octokit/rest": "^19.0.7",
+    "minify": "^9.2.0",
+    "npx": "^3.0.0"
   }
 }

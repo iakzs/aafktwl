@@ -4,3 +4,7 @@
 # ignore anothr token
 
 .vscode/launch.json
+public/
+vat.js
+access-token.txt
+script.js
