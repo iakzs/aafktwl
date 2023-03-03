@@ -1,164 +1,49 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>time trackerr</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        font-size: 15px;
-        line-height: 1.5;
-        background-color: #fff;
-      }
-      
-      h1, h2 {
-        text-align: center;
-        color: #333;
-        margin-top: 0;
-      }
-      
-      #time-spent {
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      
-      button {
-        display: block;
-        margin: 0 auto;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        color: #f7f7f7;
-        background-color: #333;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      
-      #leaderboard {
-        max-width: 400px;
-        margin: 0 auto;
-        background-color: #fff;
-        border-radius: 5px;
-        padding: 20px;
-      }
-      
-      #leaderboard ol {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      
-      #leaderboard li {
-        margin-bottom: 10px;
-        padding: 5px;
-        border-radius: 3px;
-        background-color: #f7f7f7;
-      }
-    </style>
-    <script>
-      var startTime = new Date().getTime();
-      
-    window.onload = function() {
-      // calculate the time spent
-      var currentTime = new Date().getTime();
-      var timeSpent = (currentTime - startTime) / 1000; // in seconds
+<head>
+	<title>Time Tracker</title>
+</head>
+<body>
+	<h1>Time Tracker</h1>
+	<p>You have spent <span id="time-spent">0</span> seconds on this page.</p>
+	<button onclick="saveTime()">Save Time</button>
+	<h2>Leaderboard</h2>
+	<ol id="leaderboard"></ol>
 
-      // display the time spent on the page
-      document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
-};
+	<script>
+		// Keep track of time spent on the page
+		let startTime = new Date().getTime();
+		setInterval(updateTimeSpent, 1000);
 
- function showLeaderboard() {
-        var times = JSON.parse(localStorage.getItem("times") || "[]");
-        var leaderboard = "<h2>Leaderboard</h2><ol>";
-        for (var i = 0; i < times.length; i++) {
-          leaderboard += "<li>" + times[i].username + ": " + times[i].timeSpent + " seconds</li>";
-        }
-        leaderboard += "</ol>";
-        document.getElementById("leaderboard").innerHTML = leaderboard;
-      }
-      
-function saveTime() {
-  // get the current time and calculate the time spent
-  var startTime = new Date().getTime();
-  var currentTime = new Date().getTime();
-  var timeSpent = (currentTime - startTime) / 1000; // in seconds
+		function updateTimeSpent() {
+			let currentTime = new Date().getTime();
+			let timeSpent = Math.floor((currentTime - startTime) / 1000);
+			document.getElementById("time-spent").innerHTML = timeSpent;
+		}
 
-  // prompt the user for their name
-  var username = prompt("Please enter your name:");
+		// Save time spent on the page to the leaderboard
+		function saveTime() {
+			let timeSpent = Math.floor((new Date().getTime() - startTime) / 1000);
+			let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+			leaderboard.push(timeSpent);
+			leaderboard.sort((a, b) => b - a);
+			localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+			updateLeaderboard();
+		}
 
-  // get the current leaderboard data from localStorage or initialize an empty array
-  var times = JSON.parse(localStorage.getItem("times") || "[]");
+		// Update the leaderboard on the page
+		function updateLeaderboard() {
+			let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+			let leaderboardElement = document.getElementById("leaderboard");
+			leaderboardElement.innerHTML = "";
+			for (let i = 0; i < leaderboard.length; i++) {
+				let listItem = document.createElement("li");
+				listItem.innerHTML = leaderboard[i] + " seconds";
+				leaderboardElement.appendChild(listItem);
+			}
+		}
 
-  // add the new entry to the leaderboard
-  times.push({username: username, timeSpent: timeSpent});
-
-  // sort the leaderboard by time spent (ascending order)
-  times.sort(function(a, b) {
-    return a.timeSpent - b.timeSpent;
-  });
-
-  // update the leaderboard in localStorage
-  localStorage.setItem("times", JSON.stringify(times));
-
-  // display the updated leaderboard
-  showLeaderboard();
-}
-
-
-
-      
-     
-    </script>
-  </head>
-  <body>
-    <h1>Time Tracker</h1>
-    <div id="time-spent"></div>
-    <button onclick="saveTime()">Save Time</button>
-    <div id="leaderboard"></div>
-  </body>
-<script>
-      var xhr = new XMLHttpRequest();
-      var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
-      var accessToken = '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';
-      var content = btoa('times'); // change this to the content you want to update
-
-      xhr.open('GET', url);
-      xhr.setRequestHeader('Authorization', 'token ' + accessToken);
-
-      xhr.addEventListener('load', function() {
-        if (xhr.status === 200) {
-          var sha = JSON.parse(xhr.responseText).sha;
-          updateFile(url, accessToken, content, sha);
-        } else {
-          console.log('Error:', xhr.statusText);
-        }
-      });
-
-      xhr.send();
-
-      function updateFile(url, accessToken, content, sha) {
-        var xhr = new XMLHttpRequest();
-        var message = {
-          "message": "Update file",
-          "content": content,
-          "sha": sha
-        };
-        var json = JSON.stringify(message);
-
-        xhr.open('PUT', url);
-        xhr.setRequestHeader('Authorization', 'token ' + accessToken);
-
-        xhr.addEventListener('load', function() {
-          if (xhr.status === 200) {
-            console.log('File updated successfully');
-          } else {
-            console.log('Error:', xhr.statusText);
-          }
-        });
-
-        xhr.send(json);
-      }
-    </script>
+		updateLeaderboard();
+	</script>
+</body>
 </html>
