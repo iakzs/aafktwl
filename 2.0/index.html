@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>time trackerr</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+        background-color: #fff;
+      }
+      
+      h1, h2 {
+        text-align: center;
+        color: #333;
+        margin-top: 0;
+      }
+      
+      #time-spent {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      
+      button {
+        display: block;
+        margin: 0 auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #f7f7f7;
+        background-color: #333;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      #leaderboard {
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 20px;
+      }
+      
+      #leaderboard ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      #leaderboard li {
+        margin-bottom: 10px;
+        padding: 5px;
+        border-radius: 3px;
+        background-color: #f7f7f7;
+      }
+    </style>
+    <script>
+      var startTime = new Date().getTime();
+      
+    window.onload = function() {
+      // calculate the time spent
+     setInterval(function() {
+  var currentTime = new Date().getTime();
+  var timeSpent = (currentTime - startTime) / 1000; // in seconds
+      document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
+}, 1000);
+
+ function showLeaderboard() {
+        var times = JSON.parse(localStorage.getItem("times") || "[]");
+        var leaderboard = "<h2>Leaderboard</h2><ol>";
+        for (var i = 0; i < times.length; i++) {
+          leaderboard += "<li>" + times[i].username + ": " + times[i].timeSpent + " seconds</li>";
+        }
+        leaderboard += "</ol>";
+        document.getElementById("leaderboard").innerHTML = leaderboard;
+      }
+      
+function saveTime() {
+  // get the current time and calculate the time spent
+  var currentTime = new Date().getTime();
+  var timeSpent = (currentTime - startTime) / 1000; // in seconds
+
+  // prompt the user for their name
+  var username = prompt("Please enter a username that you ill use in the leaderboard:");
+
+  // get the current leaderboard data from GitHub API
+  var xhr = new XMLHttpRequest();
+  var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
+  var accessToken = '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'; // Replace with your access token
+  xhr.open('GET', url);
+  xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      var sha = JSON.parse(xhr.responseText).sha;
+      updateLeaderboard(url, accessToken, sha, username, timeSpent);
+    } else {
+      console.log('Error:', xhr.statusText);
+    }
+  });
+  xhr.send();
+
+  function updateLeaderboard(url, accessToken, sha, username, timeSpent) {
+    // get the current leaderboard data from GitHub API
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+    xhr.addEventListener('load', function() {
+      if (xhr.status === 200) {
+        var leaderboard = JSON.parse(atob(JSON.parse(xhr.responseText).content));
+        leaderboard.push({username: username, timeSpent: timeSpent});
+        leaderboard.sort(function(a, b) {
+          return a.timeSpent - b.timeSpent;
+        });
+        var content = btoa(JSON.stringify(leaderboard, null, 2));
+        var message = {
+          "message": "Update leaderboard",
+          "content": content,
+          "sha": sha
+        };
+        var json = JSON.stringify(message);
+        xhr.open('PUT', url);
+        xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+        xhr.addEventListener('load', function() {
+          if (xhr.status === 200) {
+            console.log('Leaderboard updated successfully');
+            showLeaderboard();
+          } else {
+            console.log('Error: leaderboard didnt update');
+          }
+        });
+        xhr.send(json);
+      } else {
+        console.log('Error: didnt get leaderboard');
+      }
+    });
+    xhr.send();
+  }
+}
+
+      
+     
+    </script>
+  </head>
+  <body>
+    <h1>Time Tracker</h1>
+    <div id="time-spent"></div>
+    <button onclick="saveTime()">Save Time</button>
+    <div id="leaderboard"></div>
+  </body>
+
+</html>
