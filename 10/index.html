@@ -107,10 +107,11 @@ function saveTime() {
     <button onclick="saveTime()">Save Time</button>
     <div id="leaderboard"></div>
   </body>
+  <script src="/vat.js"></script>
 <script>
       var xhr = new XMLHttpRequest();
       var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
-      var accessToken = '';
+      var accessToken = accesstokenn;
       var content = btoa('times'); // change this to the content you want to update
       xhr.open('GET', url);
       xhr.setRequestHeader('Authorization', 'token ' + accessToken);

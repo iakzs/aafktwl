@@ -1,7 +1,12 @@
+const fs = require('fs');
+
+// Read the contents of the access-token.txt file
+const accessToken = fs.readFileSync('access-token.txt', 'utf8');
+
 const { Octokit } = require("@octokit/rest");
 
 const octokit = new Octokit({
-  auth: process.env.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
+  auth: process.env.accessToken
 });
 
 // Use the `octokit` instance to make API requests

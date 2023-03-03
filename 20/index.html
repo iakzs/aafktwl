@@ -57,6 +57,7 @@
         background-color: #f7f7f7;
       }
     </style>
+    <script src="/vat.js"></script>
     <script>
       var startTime = new Date().getTime();
       
@@ -78,7 +79,7 @@ function saveTime() {
   // get the current leaderboard data from the external JSON file
   var xhr = new XMLHttpRequest();
   var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
-  var accessToken = '';
+  var accessToken = accesstokenn;
   xhr.open('GET', url);
   xhr.setRequestHeader('Authorization', 'token ' + accessToken);
   xhr.addEventListener('load', function() {
@@ -125,10 +126,10 @@ function updateFile(url, accessToken, content, sha) {
       } else {
         console.log('Error: didnt get leaderboard');
       }
-    });
+    ;
     xhr.send();
-  }
-} 
+  
+ 
   
 
   </head>
@@ -139,4 +140,4 @@ function updateFile(url, accessToken, content, sha) {
     <div id="leaderboard"></div>
   </body>
 
-</html>
+ </html>

@@ -1,3 +1,5 @@
 
 # ignore access token file
-access_token.txt
+access-token.txt
+# ignore anothr token
+vat.js
