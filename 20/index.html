@@ -1,140 +1,136 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>time tracker 2.0</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        font-size: 15px;
-        line-height: 1.5;
-        background-color: #fff;
-      }
-      
-      h1, h2 {
-        text-align: center;
-        color: #333;
-        margin-top: 0;
-      }
-      
-      #time-spent {
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      
-      button {
-        display: block;
-        margin: 0 auto;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        color: #f7f7f7;
-        background-color: #333;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      
-      #leaderboard {
-        max-width: 400px;
-        margin: 0 auto;
-        background-color: #fff;
-        border-radius: 5px;
-        padding: 20px;
-      }
-      
-      #leaderboard ol {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      
-      #leaderboard li {
-        margin-bottom: 10px;
-        padding: 5px;
-        border-radius: 3px;
-        background-color: #f7f7f7;
-      }
-    </style>
-    <script src="https://api.github.com/repos/iakzs/aafktwl/contents/tkns/vat.js"></script>
-    <script>
-      var startTime = new Date().getTime();
-      
-    window.onload = function() {
-      // calculate the time spent
-     setInterval(function() {
-  var currentTime = new Date().getTime();
-  var timeSpent = (currentTime - startTime) / 1000; // in seconds
-      document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
-}, 1000);
-
-function saveTime() {
-  // get the current time and calculate the time spent
-  var startTime = new Date().getTime();
-  var currentTime = new Date().getTime();
-  var timeSpent = (currentTime - startTime) / 1000; // in seconds
-  // prompt the user for their name
-  var username = prompt("Please enter your name:");
-  // get the current leaderboard data from the external JSON file
-  var xhr = new XMLHttpRequest();
-  var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
-  var accessToken = accesstokenn;
-  xhr.open('GET', url);
-  xhr.setRequestHeader('Authorization', 'token ' + accessToken);
-  xhr.addEventListener('load', function() {
-    if (xhr.status === 200) {
-      var times = JSON.parse(atob(JSON.parse(xhr.responseText).content));
-      // add the new entry to the leaderboard
-      times.push({username: username, timeSpent: timeSpent});
-      // sort the leaderboard by time spent (ascending order)
-      times.sort(function(a, b) {
-        return a.timeSpent - b.timeSpent;
-      });
-      // update the leaderboard in the external JSON file
-      var content = btoa(JSON.stringify(times));
-      updateFile(url, accessToken, content, JSON.parse(xhr.responseText).sha);
-    } else {
-      console.log('Error:', xhr.statusText);
-    }
-  });
-  xhr.send();
-}
-
-function updateFile(url, accessToken, content, sha) {
-  var xhr = new XMLHttpRequest();
-  var message = {
-    "message": "Update file",
-    "content": content,
-    "sha": sha
-  };
-  var json = JSON.stringify(message);
-  xhr.open('PUT', url);
-  xhr.setRequestHeader('Authorization', 'token ' + accessToken);
-  xhr.addEventListener('load', function() {
-    if (xhr.status === 200) {
-      console.log('File updated successfully');
-      // display the updated leaderboard
-      showLeaderboard();
-    } else {
-      console.log('Error:', xhr.statusText);
-    }
-  });
-  xhr.send(json);
-}
-     ;
-      xhr.send();
-      
+</script>
+</head>
+<title>time tracker 2.0</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    background-color: #fff;
+  }
   
- 
+  h1, h2 {
+    text-align: center;
+    color: #333;
+    margin-top: 0;
+  }
   
-
+  #time-spent {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
   
-  <body>
-    <h1>Time Tracker</h1>
-    <div id="time-spent"></div>
-    <button onclick="saveTime()">Save Time</button>
-    <div id="leaderboard"></div>
-  </body>
+  button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #f7f7f7;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #leaderboard {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+  }
+  
+  #leaderboard ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #leaderboard li {
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 3px;
+    background-color: #f7f7f7;
+  }
+</style>
+<body>
+  <h1>Time Tracker</h1>
+  <div id="time-spent"></div>
+  <button onclick="saveTime()">Save Time</button>
+  <div id="leaderboard"></div>
+  <script src="https://api.github.com/repos/iakzs/aafktwl/contents/tkns/vat.js"></script>
+  <script>
+    var startTime = new Date().getTime();
+      
+      window.onload = function() {
+        // calculate the time spent
+       setInterval(function() {
+    var currentTime = new Date().getTime();
+    var timeSpent = (currentTime - startTime) / 1000; // in seconds
+        document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
+  }, 1000);
+  
+  function saveTime() {
+    // get the current time and calculate the time spent
+    var startTime = new Date().getTime();
+    var currentTime = new Date().getTime();
+    var timeSpent = (currentTime - startTime) / 1000; // in seconds
+    // prompt the user for their name
+    var username = prompt("Please enter your name:");
+    // get the current leaderboard data from the external JSON file
+    var xhr = new XMLHttpRequest();
+    var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
+    var accessToken = accesstokenn;
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+    xhr.addEventListener('load', function() {
+      if (xhr.status === 200) {
+        var times = JSON.parse(atob(JSON.parse(xhr.responseText).content));
+        // add the new entry to the leaderboard
+        times.push({username: username, timeSpent: timeSpent});
+        // sort the leaderboard by time spent (ascending order)
+        times.sort(function(a, b) {
+          return a.timeSpent - b.timeSpent;
+        });
+        // update the leaderboard in the external JSON file
+        var content = btoa(JSON.stringify(times));
+        updateFile(url, accessToken, content, JSON.parse(xhr.responseText).sha);
+      } else {
+        console.log('Error:', xhr.statusText);
+      }
+    });
+    xhr.send();
+  }
+  
+  function updateFile(url, accessToken, content, sha) {
+    var xhr = new XMLHttpRequest();
+    var message = {
+      "message": "Update file",
+      "content": content,
+      "sha": sha
+    };
+    var json = JSON.stringify(message);
+    xhr.open('PUT', url);
+    xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+    xhr.addEventListener('load', function() {
+      if (xhr.status === 200) {
+        console.log('File updated successfully');
+        // display the updated leaderboard
+        showLeaderboard();
+      } else {
+        console.log('Error:', xhr.statusText);
+      }
+    });
+    xhr.send(json);
+  }
+       ;
+        xhr.send();
+  </script>
+</body>
 
-  </html>
+</html>
