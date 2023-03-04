@@ -69,11 +69,38 @@
       window.onload = function() {
         // calculate the time spent
        setInterval(function() {
-    var currentTime = new Date().getTime();
-    var timeSpent = (currentTime - startTime) / 1000; // in seconds
-        document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
-  }, 1000);
-  
+  var currentTime = new Date().getTime();
+  var timeSpent = (currentTime - startTime) / 1000; // in seconds
+  document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
+  saveTimeData(timeSpent);
+}, 1000);
+
+  function saveTimeData() {
+  var username = prompt("Please enter your name:");
+    // get the current leaderboard data from the external JSON file
+    var xhr = new XMLHttpRequest();
+    var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
+    var accessToken = accesstokenn;
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+    xhr.addEventListener('load', function() {
+      if (xhr.status === 200) {
+        var times = JSON.parse(atob(JSON.parse(xhr.responseText).content));
+        // add the new entry to the leaderboard
+        times.push({username: username, timeSpent: timeSpent});
+        // sort the leaderboard by time spent (ascending order)
+        times.sort(function(a, b) {
+          return a.timeSpent - b.timeSpent;
+        });
+        // update the leaderboard in the external JSON file
+        var content = btoa(JSON.stringify(times));
+        updateFile(url, accessToken, content, JSON.parse(xhr.responseText).sha);
+      } else {
+        console.log('Error:', xhr.statusText);
+      }
+    });
+    xhr.send();
+  }
   function saveTime() {
     // get the current time and calculate the time spent
     var startTime = new Date().getTime();
