@@ -69,7 +69,7 @@
   var currentTime = new Date().getTime();
   var timeSpent = (currentTime - startTime) / 1000; // in seconds
   document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
-  saveTimeData(timeSpent);
+  saveTime(timeSpent);
 }, 1000);
 
   
