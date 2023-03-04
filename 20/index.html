@@ -59,9 +59,6 @@
 </style>
 <body>
   <h1>Time Tracker</h1>
-  <div id="time-spent"></div>
-  <button onclick="saveTimeData()">Save Time</button>
-  <div id="leaderboard"></div>
   <script src="https://github.com/iakzs/aafktwl/raw/main/tkns/vat.js"></script>
   <script>
     var startTime = new Date().getTime();
@@ -157,6 +154,9 @@
        ;
         xhr.send();
   </script>
+  <div id="time-spent"></div>
+  <button onclick="saveTimeData()">Save Time</button>
+  <div id="leaderboard"></div>
 </body>
 
 </html>
