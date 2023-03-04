@@ -9,7 +9,7 @@
     line-height: 1.5;
     background-color: #fff;
   }
-  
+   
   h1, h2 {
     text-align: center;
     color: #333;
@@ -65,77 +65,92 @@
   <script>
     var startTime = new Date().getTime();
       
-      window.onload = function() {
-        // calculate the time spent
-       setInterval(function() {
-  var currentTime = new Date().getTime();
-  var timeSpent = (currentTime - startTime) / 1000; // in seconds
-  document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
-  saveTime(timeSpent);
-}, 1000);
-
+    window.onload = function() {
+      // calculate the time spent
+      setInterval(function() {
+        var currentTime = new Date().getTime();
+        var timeSpent = (currentTime - startTime) / 1000; // in seconds
+        document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
+      }, 1000);
+    }
   
-  function saveTime() {
-    // get the current time and calculate the time spent
-    var startTime = new Date().getTime();
-    var currentTime = new Date().getTime();
-    var timeSpent = (currentTime - startTime) / 1000; // in seconds
-    // prompt the user for their name
-    var username = prompt("Please enter your name:");
-    // get the current leaderboard data from the external JSON file
-    var xhr = new XMLHttpRequest();
-    var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
-    var accessToken = accesstokenn;
-    xhr.open('GET', url);
-    xhr.setRequestHeader('Authorization', 'token ' + accessToken);
-    xhr.addEventListener('load', function() {
-      if (xhr.status === 200) {
-        var times = JSON.parse(atob(JSON.parse(xhr.responseText).content));
-        // add the new entry to the leaderboard
-        times.push({username: username, timeSpent: timeSpent});
-        // sort the leaderboard by time spent (ascending order)
-        times.sort(function(a, b) {
-          return a.timeSpent - b.timeSpent;
-        });
-        // update the leaderboard in the external JSON file
-        var content = btoa(JSON.stringify(times));
-        updateFile(url, accessToken, content, JSON.parse(xhr.responseText).sha);
-      } else {
-        console.log('Error:', xhr.statusText);
-      }
-    });
-    xhr.send();
-  }
-  <button onclick="saveTime()">Save Time</button>
+    function saveTime() {
+      // get the current time and calculate the time spent
+      var startTime = new Date().getTime();
+      var currentTime = new Date().getTime();
+      var timeSpent = (currentTime - startTime) / 1000; // in seconds
+      // prompt the user for their name
+      var username = prompt("Please enter your name:");
+      // get the current leaderboard data from the external JSON file
+      var xhr = new XMLHttpRequest();
+      var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
+      var accessToken = 'accesstokenn';
+      xhr.open('GET', url);
+      xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+      xhr.addEventListener('load', function() {
+        if (xhr.status === 200) {
+          // parse the leaderboard data and add the new entry
+          var leaderboardData = JSON.parse(xhr.responseText);
+          leaderboardData.push({
+            "name": username,
+            "time_spent": timeSpent
+          });
+          // update the leaderboard file on GitHub
+          var content = JSON.stringify(leaderboardData, null, 2);
+          var sha = leaderboardData.sha;
+          updateFile(url, accessToken, content, sha);
+        } else {
+          console.log('Error:', xhr.statusText);
+        }
+      });
+      xhr.send();
+    }
+    
+    function updateFile(url, accessToken, content, sha) {
+      var xhr = new XMLHttpRequest();
+      var message = {
+        "message": "Update file",
+        "content": content,
+        "sha": sha
+      };
+      var json = JSON.stringify(message);
+      xhr.open('PUT', url);
+      xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+      xhr.addEventListener('load', function() {
+        if (xhr.status === 200) {
+          console.log('File updated successfully');
+          // display the updated leaderboard
+          showLeaderboard();
+        } else {
+          console.log('Error:', xhr.statusText);
+        }
+      });
+      xhr.send(json);
+    }
+    
+    function showLeaderboard() {
+      var xhr = new XMLHttpRequest();
+      var url = 'https://api.github.com/repos/iakzs/aafktwl/contents/_data/leaderboard.json';
+      var accessToken = 'accesstokenn';
+      xhr.open('GET', url);
+      xhr.setRequestHeader('Authorization', 'token ' + accessToken);
+      xhr.addEventListener('load', function() {
+        if (xhr.status === 200) {
+          // parse the leaderboard data and display it on the page
+          var leaderboardData = JSON.parse(xhr.responseText);
+          var leaderboardHTML = '';
+          for (var i = 0; i < leaderboardData.length; i++) {
+            leaderboardHTML += '<li>' + leaderboardData[i].name + ': ' + leaderboardData[i].time_spent + ' seconds</li>';
+          }
+          document.getElementById("leaderboard").innerHTML = '<h2>Leaderboard</h2><ol>' + leaderboardHTML + '</ol>';
+        } else {
+          console.log('Error:', xhr.statusText);
+        }
+      });
+      xhr.send();
+    }
+  </script>
   
-  function updateFile(url, accessToken, content, sha) {
-    var xhr = new XMLHttpRequest();
-    var message = {
-      "message": "Update file",
-      "content": content,
-      "sha": sha
-    };
-    var json = JSON.stringify(message);
-    xhr.open('PUT', url);
-    xhr.setRequestHeader('Authorization', 'token ' + accessToken);
-    xhr.addEventListener('load', function() {
-      if (xhr.status === 200) {
-        console.log('File updated successfully');
-        // display the updated leaderboard
-        showLeaderboard();
-      } else {
-        console.log('Error:', xhr.statusText);
-      }
-    });
-    xhr.send(json);
-  }
-       ;
-        xhr.send();
-  
-  
-
-
-</script>
 </body>
 
 </html>
