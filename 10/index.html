@@ -62,11 +62,13 @@
       
     window.onload = function() {
       // calculate the time spent
-      var currentTime = new Date().getTime();
-      var timeSpent = (currentTime - startTime) / 1000; // in seconds
-      // display the time spent on the page
-      document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
-};
+      setInterval(function() {
+        var currentTime = new Date().getTime();
+        var timeSpent = (currentTime - startTime) / 1000; // in seconds
+        document.getElementById("time-spent").innerHTML = "You've spent " + timeSpent + " seconds on this website.";
+      }, 1000);
+    }
+  
  function showLeaderboard() {
         var times = JSON.parse(localStorage.getItem("times") || "[]");
         var leaderboard = "<h2>Leaderboard</h2><ol>";
